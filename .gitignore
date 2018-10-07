@@ -18,3 +18,14 @@ results/*.csv
 
 SAE.py
 
+# ignore virtualenv
+venv
+
+# ignore jupyter notebook
+*.ipynb
+
+# ignore mypy
+.mypy_cache
+
+# ignore vim swaps
+*.swp

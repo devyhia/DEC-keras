@@ -1,4 +1,5 @@
 import numpy as np
+import re
 
 
 def extract_vgg16_features(x):
@@ -309,6 +310,38 @@ def load_stl(data_path='./data/stl'):
     return features, y
 
 
+def load_coil20(data_path='./data/coil20'):
+    # if features are ready, return them
+    if os.path.exists(data_path + '/coil20_features.npy') and os.path.exists(data_path + '/coil20_labels.npy'):
+        return np.load(data_path + '/coil20_features.npy'), np.load(data_path + '/coil20_labels.npy')
+
+    from glob import glob
+
+    image_files = glob(f'{data_path}/*')
+    total_images = len(image_files)
+    filename_regex = re.compile("obj(\d+)__(\d+)\.png$")
+    
+    x, y = np.zeros((total_images, 128, 128)), np.zeros((total_images,))
+    for img_idx, img_path in enumerate(image_files):
+        img_cls, _ = next(filename_regex.finditer(img_path)).groups()
+        img_cls, _ = int(img_cls), int(img_idx)
+        x[img_idx, :, :] = np.array(Image.open(img_path))
+        y[img_idx] = img_cls - 1
+
+    # extract features
+    features = extract_vgg16_features(x)
+
+    # scale to [0,1]
+    from sklearn.preprocessing import MinMaxScaler
+    features = MinMaxScaler().fit_transform(features)
+
+    # save features
+    np.save(data_path + '/coil20_features.npy', features)
+    np.save(data_path + '/coil20_labels.npy', y)
+
+    return features, y
+
+
 def load_data(dataset_name):
     if dataset_name == 'mnist':
         return load_mnist()
@@ -322,6 +355,8 @@ def load_data(dataset_name):
         return load_reuters()
     elif dataset_name == 'stl':
         return load_stl()
+    elif dataset_name == 'coil20':
+        return load_coil20()
     else:
         print('Not defined for loading', dataset_name)
         exit(0)
