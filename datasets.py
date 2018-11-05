@@ -310,36 +310,39 @@ def load_stl(data_path='./data/stl'):
     return features, y
 
 
-def load_coil20(data_path='./data/coil20'):
+def load_coil20(dimension=128, data_path='./data/coil20'):
     # if features are ready, return them
-    if os.path.exists(data_path + '/coil20_features.npy') and os.path.exists(data_path + '/coil20_labels.npy'):
-        return np.load(data_path + '/coil20_features.npy'), np.load(data_path + '/coil20_labels.npy')
-
+    import os
     from glob import glob
+    from pil import image
+
+    features_path = f"{data_path}/coil20_features_{dimension}.npy"
+    labels_path = f"{data_path}/coil20_labels_{dimension}.npy"
+    
+    if os.path.exists(features_path) and os.path.exists(labels_path):
+        return np.load(features_path), np.load(labels_path)
 
     image_files = glob(f'{data_path}/*')
     total_images = len(image_files)
     filename_regex = re.compile("obj(\d+)__(\d+)\.png$")
     
-    x, y = np.zeros((total_images, 128, 128)), np.zeros((total_images,))
+    x, y = np.zeros((total_images, dimension, dimension)), np.zeros((total_images,))
     for img_idx, img_path in enumerate(image_files):
         img_cls, _ = next(filename_regex.finditer(img_path)).groups()
         img_cls, _ = int(img_cls), int(img_idx)
-        x[img_idx, :, :] = np.array(Image.open(img_path))
+        x[img_idx, :, :] = np.array(Image.open(img_path).resize((dimension, dimension)))
         y[img_idx] = img_cls - 1
 
-    # extract features
-    features = extract_vgg16_features(x)
-
-    # scale to [0,1]
-    from sklearn.preprocessing import MinMaxScaler
-    features = MinMaxScaler().fit_transform(features)
+    x = x.reshape((x.shape[0], -1))
+    x = np.divide(x, 255.)
 
     # save features
-    np.save(data_path + '/coil20_features.npy', features)
+    np.save(data_path + '/coil20_features.npy', x)
     np.save(data_path + '/coil20_labels.npy', y)
 
-    return features, y
+    print('COIL20 samples', x.shape)
+    
+    return x, y
 
 
 def load_data(dataset_name):

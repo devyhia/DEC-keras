@@ -58,6 +58,33 @@ Table 1. Mean performance over 10 trials. See [results.csv](./results/exp1/resul
    |reuters | acc | 52   | 76      | 78    | 72
    |        | nmi | 31   | 52      | 57    | --
 
+COIL20 (Reduced Size: 28x28) -- NMI: 0.8006; ACC: 0.7927
+
+Iter 0: acc = 0.69097, nmi = 0.77883, ari = 0.61052  ; loss= 0
+Iter 140: acc = 0.68819, nmi = 0.77565, ari = 0.61013  ; loss= 0.34916
+Iter 280: acc = 0.69583, nmi = 0.78196, ari = 0.61927  ; loss= 0.24986
+Iter 420: acc = 0.69306, nmi = 0.78575, ari = 0.61665  ; loss= 0.46839
+Iter 560: acc = 0.69861, nmi = 0.79484, ari = 0.62703  ; loss= 0.08938
+Iter 700: acc = 0.69792, nmi = 0.79352, ari = 0.62584  ; loss= 0.2613
+Iter 840: acc = 0.69583, nmi = 0.79320, ari = 0.62423  ; loss= 0.31967
+Iter 980: acc = 0.69653, nmi = 0.79431, ari = 0.62364  ; loss= 0.17717
+Iter 1120: acc = 0.69722, nmi = 0.79510, ari = 0.62548  ; loss= 0.28154
+Iter 1260: acc = 0.69931, nmi = 0.79606, ari = 0.62633  ; loss= 0.19733
+Iter 1400: acc = 0.69861, nmi = 0.79689, ari = 0.62773  ; loss= 0.17857
+Iter 1540: acc = 0.69792, nmi = 0.79628, ari = 0.62728  ; loss= 0.20577
+Iter 1680: acc = 0.69861, nmi = 0.79759, ari = 0.62791  ; loss= 0.31679
+Iter 1820: acc = 0.69931, nmi = 0.79771, ari = 0.62806  ; loss= 0.11897
+Iter 1960: acc = 0.69931, nmi = 0.79780, ari = 0.62754  ; loss= 0.18506
+Iter 2100: acc = 0.70000, nmi = 0.79857, ari = 0.62798  ; loss= 0.19794
+Iter 2240: acc = 0.70000, nmi = 0.79760, ari = 0.62838  ; loss= 0.19827
+Iter 2380: acc = 0.70000, nmi = 0.79804, ari = 0.62900  ; loss= 0.2144
+Iter 2520: acc = 0.70069, nmi = 0.79928, ari = 0.62944  ; loss= 0.1796
+Iter 2660: acc = 0.70208, nmi = 0.80000, ari = 0.63092  ; loss= 0.17944
+Iter 2800: acc = 0.70139, nmi = 0.79835, ari = 0.62969  ; loss= 0.17534
+Iter 2940: acc = 0.70278, nmi = 0.80021, ari = 0.63232  ; loss= 0.18781
+Iter 3080: acc = 0.70208, nmi = 0.80029, ari = 0.63175  ; loss= 0.17931
+Iter 3220: acc = 0.70278, nmi = 0.80060, ari = 0.63210  ; loss= 0.15894
+Iter 3360: acc = 0.70278, nmi = 0.80060, ari = 0.63210  ; loss= 0.16314
 
 ## Autoencoder model
 

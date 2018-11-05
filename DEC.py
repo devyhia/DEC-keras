@@ -271,7 +271,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='train',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--dataset', default='mnist',
-                        choices=['mnist', 'fmnist', 'usps', 'reuters10k', 'stl'])
+                        choices=['mnist', 'fmnist', 'usps', 'reuters10k', 'stl', 'coil20'])
     parser.add_argument('--batch_size', default=256, type=int)
     parser.add_argument('--maxiter', default=2e4, type=int)
     parser.add_argument('--pretrain_epochs', default=None, type=int)
@@ -293,7 +293,7 @@ if __name__ == "__main__":
     init = 'glorot_uniform'
     pretrain_optimizer = 'adam'
     # setting parameters
-    if args.dataset == 'mnist' or args.dataset == 'fmnist':
+    if args.dataset == 'mnist' or args.dataset == 'fmnist' or args.dataset == 'coil20':
         update_interval = 140
         pretrain_epochs = 300
         init = VarianceScaling(scale=1. / 3., mode='fan_in',
