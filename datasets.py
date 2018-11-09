@@ -314,15 +314,15 @@ def load_coil20(dimension=128, data_path='./data/coil20'):
     # if features are ready, return them
     import os
     from glob import glob
-    from pil import image
+    from PIL import Image
 
-    features_path = f"{data_path}/coil20_features_{dimension}.npy"
-    labels_path = f"{data_path}/coil20_labels_{dimension}.npy"
+    features_path = "{}/coil20_features_{}.npy".format(data_path, dimension)
+    labels_path = "{}/coil20_labels_{}.npy".format(data_path, dimension)
     
     if os.path.exists(features_path) and os.path.exists(labels_path):
         return np.load(features_path), np.load(labels_path)
 
-    image_files = glob(f'{data_path}/*')
+    image_files = glob('{}/*.png'.format(data_path))
     total_images = len(image_files)
     filename_regex = re.compile("obj(\d+)__(\d+)\.png$")
     
@@ -337,15 +337,15 @@ def load_coil20(dimension=128, data_path='./data/coil20'):
     x = np.divide(x, 255.)
 
     # save features
-    np.save(data_path + '/coil20_features.npy', x)
-    np.save(data_path + '/coil20_labels.npy', y)
+    np.save(features_path, x)
+    np.save(labels_path, y)
 
     print('COIL20 samples', x.shape)
     
     return x, y
 
 
-def load_data(dataset_name):
+def load_data(dataset_name, dimension=28):
     if dataset_name == 'mnist':
         return load_mnist()
     elif dataset_name == 'fmnist':
@@ -359,7 +359,7 @@ def load_data(dataset_name):
     elif dataset_name == 'stl':
         return load_stl()
     elif dataset_name == 'coil20':
-        return load_coil20()
+        return load_coil20(dimension=dimension)
     else:
         print('Not defined for loading', dataset_name)
         exit(0)

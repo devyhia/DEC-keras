@@ -272,6 +272,7 @@ if __name__ == "__main__":
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--dataset', default='mnist',
                         choices=['mnist', 'fmnist', 'usps', 'reuters10k', 'stl', 'coil20'])
+    parser.add_argument('--dimension', default=28, type=int)
     parser.add_argument('--batch_size', default=256, type=int)
     parser.add_argument('--maxiter', default=2e4, type=int)
     parser.add_argument('--pretrain_epochs', default=None, type=int)
@@ -287,7 +288,7 @@ if __name__ == "__main__":
 
     # load dataset
     from datasets import load_data
-    x, y = load_data(args.dataset)
+    x, y = load_data(args.dataset, dimension=args.dimension)
     n_clusters = len(np.unique(y))
 
     init = 'glorot_uniform'
