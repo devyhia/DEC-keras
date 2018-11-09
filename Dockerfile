@@ -38,7 +38,7 @@ RUN python -m pip install --upgrade pip
 RUN pip install matplotlib
 
 RUN conda install keras
-RUN conda install tensorflow
+RUN conda install tensorflow-gpu
 
 ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
