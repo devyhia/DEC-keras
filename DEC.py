@@ -138,7 +138,7 @@ class DEC(object):
         clustering_layer = ClusteringLayer(self.n_clusters, name='clustering')(self.encoder.output)
         self.model = Model(inputs=self.encoder.input, outputs=clustering_layer)
 
-    def pretrain(self, x, y=None, optimizer='adam', epochs=200, batch_size=256, save_dir='results/temp'):
+    def pretrain(self, dataset_name, dimension, x, y=None, optimizer='adam', epochs=200, batch_size=256, save_dir='results/temp'):
         print('...Pretraining...')
         self.autoencoder.compile(optimizer=optimizer, loss='mse')
 
@@ -170,7 +170,10 @@ class DEC(object):
         t0 = time()
         self.autoencoder.fit(x, x, batch_size=batch_size, epochs=epochs, callbacks=cb)
         print('Pretraining time: %ds' % round(time() - t0))
-        self.autoencoder.save_weights(save_dir + '/ae_weights.h5')
+        self.autoencoder.save_weights(save_dir + '/ae_weights_{dataset}_{dimension}.h5'.format(
+            dataset=dataset_name,
+            dimension=dimension
+        ))
         print('Pretrained weights are saved to %s/ae_weights.h5' % save_dir)
         self.pretrained = True
 
@@ -322,9 +325,11 @@ if __name__ == "__main__":
     dec = DEC(dims=[x.shape[-1], 500, 500, 2000, 10], n_clusters=n_clusters, init=init)
 
     if args.ae_weights is None:
-        dec.pretrain(x=x, y=y, optimizer=pretrain_optimizer,
-                     epochs=pretrain_epochs, batch_size=args.batch_size,
-                     save_dir=args.save_dir)
+        dec.pretrain(
+            dataset_name=args.dataset, dimension=args.dimension,
+            x=x, y=y, optimizer=pretrain_optimizer,
+            epochs=pretrain_epochs, batch_size=args.batch_size,
+            save_dir=args.save_dir)
     else:
         dec.autoencoder.load_weights(args.ae_weights)
 
