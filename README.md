@@ -1,4 +1,4 @@
-# Deep Clustering Network (DCN)
+# Deep Embedding Clustering (DEC)
 
 This work is a modified codebase of: https://github.com/XifengGuo/DEC-keras
 
