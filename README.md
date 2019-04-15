@@ -1,97 +1,94 @@
-# Deep Embedding Clustering (DEC)
+# Deep Clustering Network (DCN)
 
-Keras implementation for ICML-2016 paper:
+This work is a modified codebase of: https://github.com/XifengGuo/DEC-keras
 
-* Junyuan Xie, Ross Girshick, and Ali Farhadi. Unsupervised deep embedding for clustering analysis. ICML 2016.
+## What is different?
+1. We added a Dockerfile that contains the environment for which this trains and evaluates.
+2. We added the ability to train the COIL-20 dataset.
+3. We fine-tuned the hyperparameters for the network to obtain the best possible performance on COIL-20 dataset using this network.
 
-## Usage
-1. Install [Keras>=2.0.9](https://github.com/fchollet/keras), scikit-learn  
+## How to train the network?
+
+1. Install Docker with Nvidia GPU support. This could be done following this tutorial: https://github.com/NVIDIA/nvidia-docker
+2. Build the docker image using the following snippet:
 ```
-pip install keras scikit-learn   
+docker build -t dec .
 ```
-2. Clone the code to local.   
+3. Open the docker image (i.e. bash into it).
 ```
-git clone https://github.com/XifengGuo/DEC-keras.git DEC
-cd DEC
+docker run --runtime=nvidia --rm -v ./results/:/pretrain-weights -v ./tum-clustering/data/:./data/coil20 dec bash
 ```
-3. Prepare datasets.    
-
-Download **STL**:
+3. Inside the bash, start training the network using the following snippet.
 ```
-cd data/stl
-bash get_data.sh
-cd ../..
+KERAS_BACKEND=theano python DEC.py --dataset coil20 --dimension 28
 ```
-**MNIST** and **Fashion-MNIST (FMNIST)** can be downloaded automatically when you run the code.
 
-**Reuters** and **USPS**: If you cannot find these datasets yourself, you can download them from:   
-https://pan.baidu.com/s/1hsMQ8Tm (password: `4ss4`) for **Reuters**, and  
-https://pan.baidu.com/s/1skRg9Dr (password: `sc58`) for **USPS**
+## Features Generation
 
-
-4. Run experiment on MNIST.   
-`python DEC.py --dataset mnist`   
-or (if there's pretrained autoencoder weights)  
-The DEC model will be saved to "results/DEC_model_final.h5".
-
-5. Other usages.   
-
-Use `python DEC.py -h` for help.
-
-## Results
-
+The above script is using a pre-made feature files (i.e. *`.npy` files). These files are numpy arrays that has the following format:
 ```
-python run_exp.py
+features.shape  ==    (1400, DIM * DIM)
+labels.shape    ==    (1400, 1)
 ```
-Table 1. Mean performance over 10 trials. See [results.csv](./results/exp1/results.csv) for detailed results for each trial.  
 
-   |        |     |kmeans|AE+kmeans|  DEC  |  paper    
-   :--------|:---:|:----:|:-------:|:-----:|----:
-   |mnist   | acc | 53   | 88      | 91    | 84 
-   |        | nmi | 50   | 81      | 87    | --
-   |fmnist  | acc | 47   | 61      | 62    | --
-   |        | nmi | 51   | 64      | 65    | --
-   |usps    | acc | 67   | 71      | 76    | --
-   |        | nmi | 63   | 68      | 79    | --
-   |stl     | acc | 70   | 79      | 86    | --
-   |        | nmi | 71   | 72      | 82    | --
-   |reuters | acc | 52   | 76      | 78    | 72
-   |        | nmi | 31   | 52      | 57    | --
+### Ready-to-use Features
 
-COIL20 (Reduced Size: 28x28) -- NMI: 0.8006; ACC: 0.7927
+If you don't want to use your own features, I created a list of features and labels that you could directly use for training: https://s3-eu-west-1.amazonaws.com/tum-clustering/tum-clustering.zip
 
-Iter 0: acc = 0.69097, nmi = 0.77883, ari = 0.61052  ; loss= 0
-Iter 140: acc = 0.68819, nmi = 0.77565, ari = 0.61013  ; loss= 0.34916
-Iter 280: acc = 0.69583, nmi = 0.78196, ari = 0.61927  ; loss= 0.24986
-Iter 420: acc = 0.69306, nmi = 0.78575, ari = 0.61665  ; loss= 0.46839
-Iter 560: acc = 0.69861, nmi = 0.79484, ari = 0.62703  ; loss= 0.08938
-Iter 700: acc = 0.69792, nmi = 0.79352, ari = 0.62584  ; loss= 0.2613
-Iter 840: acc = 0.69583, nmi = 0.79320, ari = 0.62423  ; loss= 0.31967
-Iter 980: acc = 0.69653, nmi = 0.79431, ari = 0.62364  ; loss= 0.17717
-Iter 1120: acc = 0.69722, nmi = 0.79510, ari = 0.62548  ; loss= 0.28154
-Iter 1260: acc = 0.69931, nmi = 0.79606, ari = 0.62633  ; loss= 0.19733
-Iter 1400: acc = 0.69861, nmi = 0.79689, ari = 0.62773  ; loss= 0.17857
-Iter 1540: acc = 0.69792, nmi = 0.79628, ari = 0.62728  ; loss= 0.20577
-Iter 1680: acc = 0.69861, nmi = 0.79759, ari = 0.62791  ; loss= 0.31679
-Iter 1820: acc = 0.69931, nmi = 0.79771, ari = 0.62806  ; loss= 0.11897
-Iter 1960: acc = 0.69931, nmi = 0.79780, ari = 0.62754  ; loss= 0.18506
-Iter 2100: acc = 0.70000, nmi = 0.79857, ari = 0.62798  ; loss= 0.19794
-Iter 2240: acc = 0.70000, nmi = 0.79760, ari = 0.62838  ; loss= 0.19827
-Iter 2380: acc = 0.70000, nmi = 0.79804, ari = 0.62900  ; loss= 0.2144
-Iter 2520: acc = 0.70069, nmi = 0.79928, ari = 0.62944  ; loss= 0.1796
-Iter 2660: acc = 0.70208, nmi = 0.80000, ari = 0.63092  ; loss= 0.17944
-Iter 2800: acc = 0.70139, nmi = 0.79835, ari = 0.62969  ; loss= 0.17534
-Iter 2940: acc = 0.70278, nmi = 0.80021, ari = 0.63232  ; loss= 0.18781
-Iter 3080: acc = 0.70208, nmi = 0.80029, ari = 0.63175  ; loss= 0.17931
-Iter 3220: acc = 0.70278, nmi = 0.80060, ari = 0.63210  ; loss= 0.15894
-Iter 3360: acc = 0.70278, nmi = 0.80060, ari = 0.63210  ; loss= 0.16314
+1. Download the features
+```
+curl -OL https://s3-eu-west-1.amazonaws.com/tum-clustering/tum-clustering.zip
+```
+2. Unzip the folder:
+```
+unzip tum-clustering.zip
+```
 
-## Autoencoder model
+Here is a print of the folder structure:
+```
+tum-clustering
+|-- data
+|   |-- coil20_features_128.npy
+|   |-- coil20_features_28.npy
+|   |-- coil20_features_32.npy
+|   |-- coil20_features_48.npy
+|   |-- coil20_features_64.npy
+|   |-- coil20_features_96.npy
+|   |-- coil20_labels_128.npy
+|   |-- coil20_labels_28.npy
+|   |-- coil20_labels_32.npy
+|   |-- coil20_labels_48.npy
+|   |-- coil20_labels_64.npy
+|   `-- coil20_labels_96.npy
+`-- pretrain-weights
+    |-- ae_weights_coil20_128.h5
+    |-- ae_weights_coil20_28.h5
+    |-- ae_weights_coil20_32.h5
+    |-- ae_weights_coil20_48.h5
+    |-- ae_weights_coil20_64.h5
+    |-- ae_weights_coil20_96.h5
+    `-- ae_weights_mnist_28.h5
 
-![](autoencoders.png)
+2 directories, 19 files
+```
 
-## Other implementations
+## Network fine-tuning
 
-Original code (Caffe): https://github.com/piiswrong/dec   
-MXNet implementation: https://github.com/dmlc/mxnet/blob/master/example/dec/dec.py   
-Keras implementation without pretraining code: https://github.com/fferroni/DEC-Keras
+![Finetune Comparison](dec-finetune.png)
+
+I retrained the DEC network again with different hyperparameter values; yielding in a total of 22 variations of the network on COIL20.
+
+### Important Info:
+- Authors did not mention anything about the COIL20 dataset— or how to optimize for it.
+- Authors use the same architecture for all datasets they tested against; Only variable/hyperparameter is input size.
+- Authors use the same training parameters (number of epochs for training and pre-training), optimizer (Adam), learning rates, and stopping conditions.
+
+### Fine-tuning:
+- We trained on the following dimensinos: 28, 32, 48, 64, 96, 128
+- We trained the network 3 times per dimension; We choose the best performing accuracy per dimension.
+- Default number of epochs is 300 epochs (for pre-training the autoenconder).
+Higher number of iterations leads the pre-training to overfit and both ACC & NMI to decrease after 300 epochs.
+- The best performing model is using an input size of 96x96 and yields in ACC=0.74792, NMI=0.80572.
+- NMI is relatively constant across all dimensions. It varies within 0.02 (between 0.79 and 0.81).
+- ACC is very sensitive to different initializations (with same hyperparameters)— that's why I opted to train multipel times per dimensions.
+- The original images (i.e. 128x128) yield poor performance when trained on only 300 epochs. When increasing that to a 1000 epochs, it performs much better.
